@@ -1,0 +1,15 @@
+# NetSecure Security Dashboard Requirements
+
+# Core Flask framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+
+# Development tools
+python-dotenv==1.0.0
+
+# Optional: For production deployment
+gunicorn==21.2.0
+Werkzeug==2.3.7
+
+# Optional: For enhanced security
+cryptography==41.0.4

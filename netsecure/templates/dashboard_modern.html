@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSecure Elite - Advanced Threat Intelligence Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern_dashboard.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="grid-overlay"></div>
+        <div class="particle-field"></div>
+        <div class="scan-lines"></div>
+        <canvas id="matrix-canvas"></canvas>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="cyber-logo">
+                <i class="fas fa-shield-virus"></i>
+                <h1>NETSECURE ELITE</h1>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">Initializing Threat Intelligence Systems...</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>NETSECURE</h1>
+                        <span class="subtitle">ELITE DEFENSE SYSTEM</span>
+                    </div>
+                </div>
+                <div class="nav-menu">
+                    <a href="#" class="nav-item active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Threats</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Network</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Alerts</span>
+                    </a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="system-status">
+                    <div class="status-item">
+                        <span class="status-label">THREAT LEVEL</span>
+                        <span class="status-value threat-level-medium">ELEVATED</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">SYSTEM STATUS</span>
+                        <div class="status-indicator">
+                            <span class="status-dot online"></span>
+                            <span class="status-text">OPERATIONAL</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-profile">
+                    <i class="fas fa-user-shield"></i>
+                    <span>ADMIN</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section (Default) -->
+            <div id="dashboard-section" class="content-section active">
+            <!-- Statistics Overview -->
+            <section class="stats-overview">
+                <div class="stat-card critical">
+                    <div class="stat-icon">
+                        <i class="fas fa-virus"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="threat-count">0</h3>
+                        <p class="stat-label">Active Threats</p>
+                        <div class="stat-change positive">+12% from last hour</div>
+                    </div>
+                    <div class="stat-chart">
+                        <canvas id="threat-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="alert-count">0</h3>
+                        <p class="stat-label">Security Alerts</p>
+                        <div class="stat-change negative">-5% from yesterday</div>
+                    </div>
+                    <div class="stat-chart">
+                        <canvas id="alert-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="connection-count">0</h3>
+                        <p class="stat-label">Network Connections</p>
+                        <div class="stat-change positive">+8% network traffic</div>
+                    </div>
+                    <div class="stat-chart">
+                        <canvas id="network-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value">99.7%</h3>
+                        <p class="stat-label">System Uptime</p>
+                        <div class="stat-change neutral">Optimal performance</div>
+                    </div>
+                    <div class="stat-chart">
+                        <canvas id="uptime-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Real-time Monitoring -->
+            <section class="monitoring-section">
+                <div class="monitoring-grid">
+                    <!-- Threat Intelligence -->
+                    <div class="monitoring-panel threat-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-bug"></i>
+                                Threat Intelligence
+                            </h2>
+                            <div class="panel-controls">
+                                <button class="control-btn" title="Refresh">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button class="control-btn" title="Settings">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="threat-map">
+                                <div class="map-container">
+                                    <canvas id="threat-radar"></canvas>
+                                </div>
+                                <div class="threat-legend">
+                                    <div class="legend-item critical">
+                                        <span class="legend-dot"></span>
+                                        Critical Threats
+                                    </div>
+                                    <div class="legend-item high">
+                                        <span class="legend-dot"></span>
+                                        High Priority
+                                    </div>
+                                    <div class="legend-item medium">
+                                        <span class="legend-dot"></span>
+                                        Medium Risk
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Performance -->
+                    <div class="monitoring-panel performance-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-chart-line"></i>
+                                System Performance
+                            </h2>
+                            <div class="time-selector">
+                                <select>
+                                    <option>Last Hour</option>
+                                    <option>Last 6 Hours</option>
+                                    <option>Last 24 Hours</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="performance-metrics">
+                                <div class="metric-item">
+                                    <div class="metric-label">CPU Usage</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="cpu-usage" style="width: 45%"></div>
+                                    </div>
+                                    <div class="metric-value">45%</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Memory</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="memory-usage" style="width: 67%"></div>
+                                    </div>
+                                    <div class="metric-value">67%</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Network I/O</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="network-usage" style="width: 32%"></div>
+                                    </div>
+                                    <div class="metric-value">32%</div>
+                                </div>
+                                <div class="metric-item">
+                                    <div class="metric-label">Disk Usage</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-fill" id="disk-usage" style="width: 58%"></div>
+                                    </div>
+                                    <div class="metric-value">58%</div>
+                                </div>
+                            </div>
+                            <div class="performance-chart">
+                                <canvas id="performance-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Alerts -->
+                    <div class="monitoring-panel alerts-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-bell"></i>
+                                Live Security Alerts
+                            </h2>
+                            <div class="alert-counter">
+                                <span class="counter-badge" id="live-alert-count">0</span>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="alert-stream" id="alert-stream">
+                                <!-- Alerts will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Network Activity -->
+                    <div class="monitoring-panel network-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-globe"></i>
+                                Network Activity Map
+                            </h2>
+                            <div class="network-stats">
+                                <span class="stat-item">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span id="upload-speed">0 MB/s</span>
+                                </span>
+                                <span class="stat-item">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <span id="download-speed">0 MB/s</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="network-visualization">
+                                <canvas id="network-map"></canvas>
+                            </div>
+                            <div class="connection-list" id="connection-list">
+                                <!-- Network connections will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Log -->
+            <section class="activity-section">
+                <div class="activity-panel">
+                    <div class="panel-header">
+                        <h2>
+                            <i class="fas fa-list-ul"></i>
+                            System Activity Log
+                        </h2>
+                        <div class="log-controls">
+                            <input type="text" placeholder="Search logs..." class="search-input">
+                            <select class="filter-select">
+                                <option>All Levels</option>
+                                <option>Critical</option>
+                                <option>Warning</option>
+                                <option>Info</option>
+                            </select>
+                            <button class="control-btn" title="Export Logs">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="log-container" id="log-container">
+                            <!-- Logs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </div>
+
+            <!-- Threats Section -->
+            <div id="threats-section" class="content-section">
+                <div class="section-header">
+                    <h1>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Threat Management Center
+                    </h1>
+                    <div class="header-controls">
+                        <button class="control-btn primary">
+                            <i class="fas fa-plus"></i>
+                            Add Rule
+                        </button>
+                        <button class="control-btn">
+                            <i class="fas fa-download"></i>
+                            Export Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="threats-grid">
+                    <!-- Threat Overview -->
+                    <div class="threat-overview-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-shield-alt"></i>
+                                Threat Overview
+                            </h2>
+                        </div>
+                        <div class="panel-content">
+                            <div class="threat-stats">
+                                <div class="threat-stat-card critical">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-skull-crossbones"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="critical-threats">0</h3>
+                                        <p>Critical Threats</p>
+                                    </div>
+                                </div>
+                                <div class="threat-stat-card high">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="high-threats">0</h3>
+                                        <p>High Priority</p>
+                                    </div>
+                                </div>
+                                <div class="threat-stat-card medium">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="medium-threats">0</h3>
+                                        <p>Medium Risk</p>
+                                    </div>
+                                </div>
+                                <div class="threat-stat-card low">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="low-threats">0</h3>
+                                        <p>Low Risk</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <canvas id="threat-timeline-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Active Threats Table -->
+                    <div class="threats-table-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-list"></i>
+                                Active Threats
+                            </h2>
+                            <div class="panel-controls">
+                                <input type="search" placeholder="Search threats..." class="search-input">
+                                <select class="filter-select">
+                                    <option>All Severities</option>
+                                    <option>Critical</option>
+                                    <option>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="threats-table">
+                                <table id="threats-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Severity</th>
+                                            <th>Threat Type</th>
+                                            <th>Source</th>
+                                            <th>Target</th>
+                                            <th>First Seen</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="threats-table-body">
+                                        <!-- Threat data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Section -->
+            <div id="network-section" class="content-section">
+                <div class="section-header">
+                    <h1>
+                        <i class="fas fa-network-wired"></i>
+                        Network Monitoring
+                    </h1>
+                    <div class="header-controls">
+                        <button class="control-btn primary">
+                            <i class="fas fa-search"></i>
+                            Network Scan
+                        </button>
+                        <button class="control-btn">
+                            <i class="fas fa-cog"></i>
+                            Configure
+                        </button>
+                    </div>
+                </div>
+
+                <div class="network-grid">
+                    <!-- Network Topology -->
+                    <div class="network-topology-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-project-diagram"></i>
+                                Network Topology
+                            </h2>
+                        </div>
+                        <div class="panel-content">
+                            <canvas id="network-topology"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Connection Monitor -->
+                    <div class="connection-monitor-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-plug"></i>
+                                Active Connections
+                            </h2>
+                            <div class="connection-stats">
+                                <span class="stat-item">
+                                    <span class="stat-value" id="total-connections">0</span>
+                                    <span class="stat-label">Total</span>
+                                </span>
+                                <span class="stat-item">
+                                    <span class="stat-value" id="secure-connections">0</span>
+                                    <span class="stat-label">Secure</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="connections-table">
+                                <table id="connections-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Protocol</th>
+                                            <th>Local Address</th>
+                                            <th>Remote Address</th>
+                                            <th>Status</th>
+                                            <th>Duration</th>
+                                            <th>Data Transfer</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="connections-table-body">
+                                        <!-- Connection data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bandwidth Monitor -->
+                    <div class="bandwidth-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-tachometer-alt"></i>
+                                Bandwidth Usage
+                            </h2>
+                        </div>
+                        <div class="panel-content">
+                            <div class="bandwidth-stats">
+                                <div class="bandwidth-stat">
+                                    <div class="stat-label">Download</div>
+                                    <div class="stat-value" id="download-speed">0 MB/s</div>
+                                    <div class="stat-bar">
+                                        <div class="stat-fill" id="download-fill"></div>
+                                    </div>
+                                </div>
+                                <div class="bandwidth-stat">
+                                    <div class="stat-label">Upload</div>
+                                    <div class="stat-value" id="upload-speed">0 MB/s</div>
+                                    <div class="stat-bar">
+                                        <div class="stat-fill" id="upload-fill"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <canvas id="bandwidth-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div id="alerts-section" class="content-section">
+                <div class="section-header">
+                    <h1>
+                        <i class="fas fa-bell"></i>
+                        Alert Management
+                    </h1>
+                    <div class="header-controls">
+                        <button class="control-btn primary">
+                            <i class="fas fa-plus"></i>
+                            Create Alert Rule
+                        </button>
+                        <button class="control-btn">
+                            <i class="fas fa-check-double"></i>
+                            Mark All Read
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alerts-grid">
+                    <!-- Alert Statistics -->
+                    <div class="alert-stats-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-chart-bar"></i>
+                                Alert Statistics
+                            </h2>
+                        </div>
+                        <div class="panel-content">
+                            <div class="alert-summary">
+                                <div class="alert-stat-card unread">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="unread-alerts">0</h3>
+                                        <p>Unread Alerts</p>
+                                    </div>
+                                </div>
+                                <div class="alert-stat-card today">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="today-alerts">0</h3>
+                                        <p>Today's Alerts</p>
+                                    </div>
+                                </div>
+                                <div class="alert-stat-card week">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-week"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3 id="week-alerts">0</h3>
+                                        <p>This Week</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <canvas id="alert-trend-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Alert Feed -->
+                    <div class="alert-feed-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-stream"></i>
+                                Alert Feed
+                            </h2>
+                            <div class="panel-controls">
+                                <select class="filter-select">
+                                    <option>All Types</option>
+                                    <option>Security</option>
+                                    <option>System</option>
+                                    <option>Network</option>
+                                    <option>Application</option>
+                                </select>
+                                <select class="filter-select">
+                                    <option>All Severities</option>
+                                    <option>Critical</option>
+                                    <option>High</option>
+                                    <option>Medium</option>
+                                    <option>Low</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="panel-content">
+                            <div class="alert-feed" id="alert-feed">
+                                <!-- Alert items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Rules -->
+                    <div class="alert-rules-panel">
+                        <div class="panel-header">
+                            <h2>
+                                <i class="fas fa-cogs"></i>
+                                Alert Rules
+                            </h2>
+                        </div>
+                        <div class="panel-content">
+                            <div class="rules-table">
+                                <table id="rules-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Rule Name</th>
+                                            <th>Condition</th>
+                                            <th>Severity</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rules-table-body">
+                                        <!-- Rules data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for detailed views -->
+    <div id="detail-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/modern_dashboard.js') }}"></script>
+</body>
+</html>
